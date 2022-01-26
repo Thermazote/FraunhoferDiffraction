@@ -25,6 +25,11 @@ class Window(QtWidgets.QWidget):
             warnings.simplefilter("ignore")
             self.step = np.float64((self.xmax - self.xmin) / self.sampling)    # value of step for next point
 
+        # save arguments in list
+        for i in range(self.sampling):
+            x = self.xmin + i * self.step
+            self.x_l.append(x)
+
         # window adjustment
         self.setWindowTitle("Fraunhofer Diffraction")
         self.setMinimumSize(900, 600)
@@ -95,14 +100,12 @@ class Window(QtWidgets.QWidget):
         self.move(qr.topLeft())
 
     def calculate(self):
-        self.x_l.clear()
         self.fx_l.clear()
         for i in range(self.sampling):
-            x = self.xmin + i * self.step
+            x = self.x_l[i]
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
                 fx = (np.sin((np.pi * self.b * x) / (self.lamda * self.d)) / ((np.pi * self.b * x) / (self.lamda * self.d))) ** 2
-            self.x_l.append(x)
             self.fx_l.append(fx)
 
     def plot_redraw(self):
